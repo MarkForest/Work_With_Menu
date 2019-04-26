@@ -15,6 +15,8 @@ namespace WindowsFormsApp1
     {
         Color defaultColor = new Color();
         Color defaultFontColor = new Color();
+        ImageList list = null;
+        ToolBar toolBar = null;
         ContextMenu cm = null;
         public Form1()
         {
@@ -34,9 +36,56 @@ namespace WindowsFormsApp1
             item.Click += openToolStripMenuItem_Click;
             item2.Click += russiaToolStripMenuItem_Click;
             item3.Click += englishToolStripMenuItem_Click;
+            list = new ImageList();
+            list.ImageSize = new Size(50, 50);
+            
+            list.Images.Add(new Bitmap("open.bmp"));
+            list.Images.Add(new Bitmap("cut.bmp"));
+            list.Images.Add(new Bitmap("paste.bmp"));
+            toolBar = new ToolBar();
+            toolBar.Appearance = ToolBarAppearance.Flat;
+            toolBar.BorderStyle = BorderStyle.Fixed3D;
+            toolBar.ImageList = list;
+            ToolBarButton toolBarButton1 = new ToolBarButton();
+            toolBarButton1.Tag = "open";
+            ToolBarButton toolBarButton2 = new ToolBarButton();
+            toolBarButton2.Tag = "cut";
+            ToolBarButton toolBarButton3 = new ToolBarButton();
+            toolBarButton3.Tag = "paste";
+            toolBarButton1.ImageIndex = 0;
+            toolBarButton2.ImageIndex = 1;
+            toolBarButton3.ImageIndex = 2;
+            toolBar.Buttons.Add(toolBarButton1);
+            toolBar.Buttons.Add(toolBarButton2);
+            toolBar.Buttons.Add(toolBarButton3);
+            this.Controls.Add(toolBar);
+            toolBar.ButtonClick += ToolBar_ButtonClick;
 
 
+        }
 
+        private void ToolBar_ButtonClick(object sender, ToolBarButtonClickEventArgs e)
+        {
+            switch (e.Button.Tag)
+            {
+                case "open":
+                    textBox1.Enabled = true;
+                    OpenFileDialog dialog = new OpenFileDialog();
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        textBox1.Text = File.ReadAllText(dialog.FileName, Encoding.Default);
+                    }
+                    
+                    break;
+                case "cut":
+                    textBox1.Cut();
+                    break;
+                case "paste":
+                    textBox1.Paste();
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
